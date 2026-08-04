@@ -6,52 +6,161 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BIOTEKNOLOGI DAN KETAHANAN PANGAN SERTA ZAT ADITIF DALAM BAHAN PANGAN</title>
 <link rel="icon" type="image/x-icon" href="libs/favicon.ico">
-<script>document.querySelector("html").classList.add("js");</script><script src="libs/jquery/jquery.min.js"> </script><script src="libs/common_i18n.js"> </script><script src="libs/common.js"> </script><script src="libs/exe_export.js"> </script><script src="libs/bootstrap/bootstrap.bundle.min.js"> </script><link rel="stylesheet" href="libs/bootstrap/bootstrap.min.css">
-<script src="idevices/text/text.js"></script><link rel="stylesheet" href="idevices/text/text.css">
-<link rel="stylesheet" href="content/css/base.css"><script src="theme/style.js"> </script><link rel="stylesheet" href="theme/style.css">
+<script>document.querySelector("html").classList.add("js");</script>
+<script src="libs/jquery/jquery.min.js"></script>
+<script src="libs/common_i18n.js"></script>
+<script src="libs/common.js"></script>
+<script src="libs/exe_export.js"></script>
+<script src="libs/bootstrap/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="libs/bootstrap/bootstrap.min.css">
+<script src="idevices/text/text.js"></script>
+<link rel="stylesheet" href="idevices/text/text.css">
+<link rel="stylesheet" href="content/css/base.css">
+<script src="theme/style.js"></script>
+<link rel="stylesheet" href="theme/style.css">
+<style>
+    /* Styling Banner Logo */
+    .top-logo-banner {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        background: #ffffff !important;
+        padding: 12px 24px !important;
+        border-radius: 12px !important;
+        margin-bottom: 15px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+        border: 1px solid #e2e8f0 !important;
+        max-width: 780px !important;
+        width: 90% !important;
+    }
+    .top-logo-banner img {
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: 65px !important;
+        object-fit: contain !important;
+        background: transparent !important;
+    }
+
+    /* Container Landing Page */
+    #landing-page {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #f8f9fa;
+        z-index: 999999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow-y: auto;
+    }
+    #landing-page h1 {
+        color: #2c3e50;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        font-size: 2.1rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        line-height: 1.25;
+    }
+    #landing-page p {
+        color: #555555;
+        margin-bottom: 18px;
+        font-size: 1.05rem;
+        max-width: 680px;
+        line-height: 1.45;
+    }
+
+    /* Styling Gambar Utama */
+    .main-img {
+        width: 100%;
+        max-width: 580px;
+        max-height: 280px;
+        object-fit: cover;
+        border-radius: 16px;
+        margin-bottom: 22px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        border: 2px solid #ffffff;
+    }
+
+    /* Tombol Mulai */
+    .btn-mulai {
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        padding: 14px 42px;
+        font-size: 1.15rem;
+        font-weight: bold;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.35);
+    }
+    .btn-mulai:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-height: 720px) {
+        .top-logo-banner img { max-height: 52px !important; }
+        #landing-page h1 { font-size: 1.7rem; }
+        .main-img { max-height: 210px; margin-bottom: 15px; }
+        .btn-mulai { padding: 12px 32px; font-size: 1rem; }
+    }
+</style>
 </head>
 <body class="exe-export exe-web-site">
 <script>document.body.className+=" js"</script>
-<div class="exe-content exe-export pre-js siteNav-hidden"><a href="#page-molanbs1-khi9eubzt" id="skipNav">Skip to content</a> <nav id="siteNav">
+
+<div id="landing-page">
+    <div class="top-logo-banner">
+        <img src="banner-logo.png" alt="Header Logo Kemendikdasmen, Sobat SMP, Pendidikan Bermutu, RAMAH">
+    </div>
+
+    <h1>Bioteknologi<br>IPA Kelas 9</h1>
+    <p>Selamat datang di bahan ajar interaktif. Mari mulai petualangan ilmiah Anda menjelajahi dunia bioteknologi.</p>
+    
+    <img class="main-img" src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Ilustrasi Bioteknologi">
+    
+    <button class="btn-mulai" onclick="document.getElementById('landing-page').style.display='none'">Mulai Belajar</button>
+</div>
+<div class="exe-content exe-export pre-js siteNav-hidden"><a href="#page-mp6qzcm5-qygb2iund" id="skipNav">Skip to content</a> <nav id="siteNav">
 <ul>
 <li class="active"> <a href="index.html" class="active main-node no-ch">CP-TP</a>
 </li>
-<li> <a href="html/petunjuk-penggunaan-aplikasi-bioteknologi.html" class="no-ch">Petunjuk Penggunaan Aplikasi Bioteknologi</a>
+<li> <a href="html/cara-penggunaan.html" class="no-ch">Cara penggunaan</a>
 </li>
-<li> <a href="html/trobleshouting-aplikasi-dan-solusinya.html" class="no-ch">Trobleshouting aplikasi dan solusinya</a>
-</li>
-<li> <a href="html/aplikasi-bioteknologi.html" class="no-ch">Aplikasi Bioteknologi</a>
-</li>
-<li> <a href="html/ketahanan-pangan.html" class="daddy">Ketahanan Pangan</a>
+<li> <a href="html/mengenal-bioteknologi.html" class="daddy">Mengenal Bioteknologi</a>
 <ul class="other-section">
-<li> <a href="html/4-pilar-utama-ketahanan-pangan.html" class="no-ch">4 Pilar Utama Ketahanan Pangan</a>
+<li> <a href="html/konvensional-vs-modern.html" class="no-ch">Konvensional vs Modern</a>
 </li>
-<li> <a href="html/tantangan-strategi-penguatan.html" class="no-ch">Tantangan &amp; Strategi Penguatan</a>
+<li> <a href="html/pemanfaatan-bioteknologi.html" class="no-ch">Pemanfaatan Bioteknologi</a>
 </li>
-<li> <a href="html/kuis.html" class="no-ch">Kuis</a>
+<li> <a href="html/teknik-dna-rekombinan.html" class="no-ch">Teknik DNA rekombinan</a>
 </li>
-</ul>
+<li> <a href="html/asesmen.html" class="no-ch">Asesmen</a>
 </li>
-<li> <a href="html/zat-aditif.html" class="daddy">Zat Aditif</a>
-<ul class="other-section">
-<li> <a href="html/penggolongan-zat-aditif.html" class="no-ch">Penggolongan Zat Aditif</a>
-</li>
-<li> <a href="html/dampak-kesehatan-dan-aturan-pakai.html" class="no-ch">Dampak Kesehatan dan Aturan Pakai</a>
-</li>
-<li> <a href="html/bahaya-zat-aditif-dan-bahan-non-pangan.html" class="no-ch">Bahaya Zat Aditif dan Bahan Non-Pangan</a>
-</li>
-<li> <a href="html/kuis-2.html" class="no-ch">Kuis</a>
+<li> <a href="html/rangkuman.html" class="no-ch">Rangkuman</a>
 </li>
 </ul>
 </li>
-<li> <a href="html/posttest.html" class="no-ch">PostTest</a>
+<li> <a href="html/profil-pengembang.html" class="no-ch">Profil Pengembang</a>
+</li>
+<li> <a href="html/referensi.html" class="no-ch">Referensi</a>
 </li>
 </ul>
-</nav><main id="page-molanbs1-khi9eubzt" class="page"> 
+</nav><main id="page-mp6qzcm5-qygb2iund" class="page"> 
 <header class="main-header">
-<div class="package-header"><p class="package-title">BIOTEKNOLOGI DAN KETAHANAN PANGAN SERTA ZAT ADITIF DALAM BAHAN PANGAN</p></div>
+<div class="package-header"><p class="package-title">BIOTEKNOLOGI</p></div>
 <div class="page-header"><h1 class="page-title">CP-TP</h1></div>
-</header><div id="page-content-page-molanbs1-khi9eubzt" class="page-content">
+</header><div id="page-content-page-mp6qzcm5-qygb2iund" class="page-content">
 <article id="block-1777209140796-6oasyffoc" class="box">
 <header class="box-head no-icon">
 <h1 class="box-title">Berikut adalah Capaian dan Tujuan Pembelajaran Materi kita</h1>
@@ -70,13 +179,13 @@
 </div>
 </article>
 </div></main><div class="nav-buttons">
-<span class="nav-button nav-button-left" aria-hidden="true"><span>Previous</span></span>
-<a href="html/petunjuk-penggunaan-aplikasi-bioteknologi.html" title="Next" class="nav-button nav-button-right"><span>Next</span></a>
+<span class="nav-button nav-button-left" aria-hidden="true"><span>balik</span></span>
+<a href="html/cara-penggunaan.html" title="Next" class="nav-button nav-button-right"><span>lanjut</span></a>
 </div>
-<footer id="siteFooter"><div id="siteFooterContent"> <div id="packageLicense" class=""> <p> <span class="license-label">Licencia: </span><span class="license">Public domain</span></p>
+<footer id="siteFooter"><div id="siteFooterContent"> <div id="packageLicense" class=""> <p> <span class="license-label">License: </span><span class="license">Public domain</span></p>
 </div>
 </div></footer>
 </div>
-<p id="made-with-eXe"> <a href="https://exelearning.net/" target="_blank" rel="noopener"> <span>Creado con eXeLearning <span>(nueva ventana)</span></span></a></p>
+<p id="made-with-eXe"> <a href="https://exelearning.net/" target="_blank" rel="noopener"> <span>Made with eXeLearning <span>(New window)</span></span></a></p>
 </body>
 </html>

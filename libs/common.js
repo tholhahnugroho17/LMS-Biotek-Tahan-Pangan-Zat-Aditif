@@ -519,60 +519,81 @@ var $exe = {
                     $exe.hasMultimediaGalleries = true;
                 }
             });
-            lightboxLinks.prettyPhoto({
-                social_tools: "",
-                deeplinking: false,
-                opacity: 0.85,
-                changepicturecallback: function () {
-                    var block = $("#pp_full_res")
-                    var media = $(".exe-media-box-element", block);
-                    if ($exe.loadMediaPlayer != undefined) {
-                        if ($exe.loadMediaPlayer.isReady) {
-                            if (media.length == 1) media.mediaelementplayer();
-                            $exe.loadMediaPlayer.isCalledInBox = true;
+            // Re-query after $exeFX.init() has finished rebuilding exe-fx DOM (e.g. accordion rft()).
+            // Both prettyPhoto and the gallery-error fallback use the same post-FX-init set.
+            setTimeout(function() {
+                var currentLightboxLinks = $("a[rel^='lightbox']");
+                currentLightboxLinks.prettyPhoto({
+                    social_tools: "",
+                    deeplinking: false,
+                    opacity: 0.85,
+                    changepicturecallback: function () {
+                        var block = $("#pp_full_res")
+                        var media = $(".exe-media-box-element", block);
+                        if ($exe.loadMediaPlayer != undefined) {
+                            if ($exe.loadMediaPlayer.isReady) {
+                                // No mediaelementplayer in prettyPhoto
+                                // if (media.length == 1) media.mediaelementplayer();
+                                $exe.loadMediaPlayer.isCalledInBox = true;
+                            }
                         }
-                    }
-                    // Add a download link and a CSS class to pp_content_container (see exe_lightbox.css)
-                    var cont = $(".pp_content_container");
-                    cont.attr("class", "pp_content_container");
-                    if (media.length == 1 && media[0].hasAttribute('src')) {
-                        if (media.hasClass("exe-media-box-audio")) cont.attr("class", "pp_content_container with-audio");
-                        var src = media.attr('src');
-                        var ext = src.split("/");
-                        ext = ext[ext.length - 1];
-                        ext = ext.split(".")[1];
-                        if (typeof ext == 'undefined' || ext == 'undefined') ext = $exe_i18n.download;
-                        $(".pp_details .pp_description").append(' <span class="exe-media-download"><a href="' + src + '" title="' + $exe_i18n.download + '" download>' + ext + '</a></span>');
-                    } else {
-                        // Hide the title at the bottom (we use h2.pp_title instead)
-                        block = $(".pp_inline", block);
-                        if (block.length == 1) $(".pp_description").hide();
-                    }
-                }
-            });
-            // If there are galleries, but lightboxLinks.length==0, there's an error
-            // No links with the rel attribute were selected
-            // This might happen in some ePub readers
-            // See issue #258
-            var eXeGalleries = $('.GalleryIdevice');
-            if (lightboxLinks.length == 0 && eXeGalleries.length > 0 && typeof (exe_editor_mode) == "undefined") {
-                // We execute this code only outside eXe or the Image Gallery edition will fail (see issue #317)
-                $('.exeImageGallery a').each(function () {
-                    this.title += " ~ [" + this.href + "]";
-                    this.href = "#";
-                    this.onclick = function () {
-                        var ul = $(this).parent().parent();
-                        if (ul.length == 1 && ul.attr('id') != "") {
-                            if ($("#" + ul.attr('id') + "-warning").length == 0) {
-                                // Due to G. Chrome's Content Security Policy
-                                var txt = $exe_i18n.dataError;
-                                if ($('body').hasClass('exe-epub3')) txt += '<br /><br />' + $exe_i18n.epubJSerror;
-                                ul.prepend('<div id="' + ul.attr('id') + '-warning">' + txt + '</div>');
+                        // Add a download link and a CSS class to pp_content_container (see exe_lightbox.css)
+                        var cont = $(".pp_content_container");
+                        cont.attr("class", "pp_content_container");
+                        var src = null;
+                        if (media.length == 1) {
+                            if (media[0].hasAttribute('src')) {
+                                src = media.attr('src');
+                            } else {
+                                var sourceEl = media.find('source[src]').first();
+                                if (sourceEl.length) src = sourceEl.attr('src');
+                            }
+                        }
+                        if (src) {
+                            if (media.hasClass("exe-media-box-audio")) cont.attr("class", "pp_content_container with-audio");
+                            // Extension = last dot-segment of the filename, without query string or fragment
+                            var fileName = src.split("/").pop().split("?")[0].split("#")[0];
+                            var dotIndex = fileName.lastIndexOf(".");
+                            var ext = dotIndex > -1 ? fileName.substring(dotIndex + 1) : undefined;
+                            if (typeof ext == 'undefined' || ext == 'undefined' || ext == '') ext = $exe_i18n.download;
+                            $(".pp_details .pp_description").append(' <span class="exe-media-download"><a href="' + src + '" title="' + $exe_i18n.download + '" download>' + ext + '</a></span>');
+                        } else {
+                            // Hide the title at the bottom (we use h2.pp_title instead)
+                            block = $(".pp_inline", block);
+                            if (block.length == 1) $(".pp_description").hide();
+                        }
+                        // Recalculate pp_content height for video elements (screen height + 50px for controls)
+                        var ppVideo = $("#pp_full_res video");
+                        if (ppVideo.length) {
+                            var videoHeight = ppVideo[0].getBoundingClientRect().height;
+                            if (videoHeight > 0) {
+                                $(".pp_content").css('height', videoHeight + 50);
                             }
                         }
                     }
                 });
-            }
+                // If there are galleries but no lightbox links, there's an error (e.g. some ePub readers).
+                // See issue #258
+                var eXeGalleries = $('.GalleryIdevice');
+                if (currentLightboxLinks.length == 0 && eXeGalleries.length > 0 && typeof (exe_editor_mode) == "undefined") {
+                    // We execute this code only outside eXe or the Image Gallery edition will fail (see issue #317)
+                    $('.exeImageGallery a').each(function () {
+                        this.title += " ~ [" + this.href + "]";
+                        this.href = "#";
+                        this.onclick = function () {
+                            var ul = $(this).parent().parent();
+                            if (ul.length == 1 && ul.attr('id') != "") {
+                                if ($("#" + ul.attr('id') + "-warning").length == 0) {
+                                    // Due to G. Chrome's Content Security Policy
+                                    var txt = $exe_i18n.dataError;
+                                    if ($('body').hasClass('exe-epub3')) txt += '<br /><br />' + $exe_i18n.epubJSerror;
+                                    ul.prepend('<div id="' + ul.attr('id') + '-warning">' + txt + '</div>');
+                                }
+                            }
+                        }
+                    });
+                }
+            }, 0);
         }
     },
 
@@ -1140,18 +1161,20 @@ var $exeDevices = {
                 registerActivity: function (game) {
                     if (typeof game !== 'object' || game === null) return;
 
+                    // Resolve the iDevice identity from the DOM once. This is used by
+                    // both SCORM tracking and the always-on xAPI emitter (exe_xapi.js),
+                    // so it must run in every export format, not only under SCORM.
+                    game.mainElement = game.main.charAt(0) === '.' ? $(`${game.main}`).eq(0) : $(`#${game.main}`).eq(0);
+                    let $ideviceNode = game.mainElement.closest('.idevice_node');
+                    // The node id equals the stable odeIdeviceId, used as the xAPI object IRI.
+                    game.ideviceId = $ideviceNode.attr('id');
+                    game.title = (game.mainElement.closest('article')
+                        .find('header .box-title').text() || '').replace(/"/g, ' ');
+                    game.ideviceNumber = $('.idevice_node').index($ideviceNode) + 1;
+
                     let lmsData = {};
                     if (typeof pipwerks !== 'undefined' && pipwerks.SCORM) {
-                        game.mainElement = game.main.charAt(0) === '.' ? game.mainElement = $(`${game.main}`).eq(0) : game.mainElement = $(`#${game.main}`).eq(0);
                         $exeDevices.iDevice.gamification.scorm.createScoreScormHtml(game);
-                        game.title = game.mainElement.closest('article')
-                            .find('header .box-title').text() || '';
-                        game.title = game.title.replace(/"/g, ' ');
-                        let $idevices = $('.idevice_node');
-                        let deviceId = game.mainElement.closest('.idevice_node').attr('id');
-                        let index = $idevices.index($('#' + deviceId));
-
-                        game.ideviceNumber = index + 1;
 
                         let suspendData = pipwerks.SCORM.get("cmi.suspend_data") || "";
 
@@ -1238,7 +1261,15 @@ var $exeDevices = {
                 },
 
                 sendScoreNew: function (auto, game) {
-                    if (typeof pipwerks === 'undefined' || !pipwerks.SCORM || typeof game !== 'object' || game === null) {
+                    if (typeof game !== 'object' || game === null) {
+                        return;
+                    }
+                    // xAPI: emit a per-iDevice statement whenever the activity has a
+                    // score, regardless of SCORM/export format (see exe_xapi.js).
+                    if (game.gameStarted || game.gameOver) {
+                        $exeDevices.iDevice.gamification.track('answered', game);
+                    }
+                    if (typeof pipwerks === 'undefined' || !pipwerks.SCORM) {
                         return;
                     }
                     const $gmain = game.main.charAt(0) === '.' ? $(`${game.main}`).eq(0) : $(`#${game.main}`).eq(0);
@@ -1338,6 +1369,45 @@ var $exeDevices = {
 
                     $("#eXeScoreNodeScore").text(`${game.msgs.msgYouScore}: ${newFinalScore}/100`);
 
+                },
+            },
+
+            /**
+             * Transport-agnostic dispatch to the always-on xAPI emitter
+             * (exe_xapi.js). Runs in EVERY export format, independent of
+             * SCORM/pipwerks, so a published package is xAPI-compatible out
+             * of the box (it is therefore a sibling of `scorm`, not nested in
+             * it). Score math stays single-source (game.scorerp +
+             * getFinalScore); this only forwards it as an xAPI statement.
+             * See https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md
+             *
+             * @param {string} eventType e.g. 'answered'
+             * @param {Object} game the iDevice game options (carries score + identity)
+             */
+            track: function (eventType, game) {
+                try {
+                    let xapi = $exeDevices.iDevice.xapi;
+                    if (!xapi || typeof xapi.emit !== 'function') return;
+                    if (typeof game !== 'object' || game === null) return;
+                    if (!game.ideviceId && game.mainElement && game.mainElement.closest) {
+                        game.ideviceId = game.mainElement.closest('.idevice_node').attr('id');
+                    }
+                    xapi.emit({
+                        type: eventType,
+                        ideviceId: game.ideviceId,
+                        // The iDevice type/class name lives on game.idevice (see the
+                        // gamification-evaluation-saved emitter, which uses
+                        // `ideviceType: game.idevice`). game.ideviceType is never
+                        // populated by the real callers, so prefer it only when a
+                        // caller explicitly sets it and fall back to game.idevice.
+                        ideviceType: game.ideviceType || game.idevice,
+                        ideviceNumber: game.ideviceNumber,
+                        title: game.title,
+                        score: parseFloat(game.scorerp),
+                        weighted: game.weighted,
+                    });
+                } catch (e) {
+                    // Never let tracking break the activity.
                 }
             },
 
@@ -1659,7 +1729,15 @@ var $exeDevices = {
                 },
 
                 hasLatex: function (text) {
-                    return /\\\(|\\\[|\\begin\{|\$\$/.test(text);
+                    if (!text) return false;
+                    // Ignore already pre-rendered math: its data-latex attribute keeps the
+                    // original delimiters (e.g. \begin{...}) which would otherwise re-trigger
+                    // a MathJax load in exports that ship no MathJax engine (404).
+                    var stripped = String(text).replace(
+                        /<span[^>]*\bexe-math-rendered\b[^>]*>[\s\S]*?<\/span>/g,
+                        ''
+                    );
+                    return /\\\(|\\\[|\\begin\{|\$\$/.test(stripped);
                 },
 
                 updateLatex: function (target, opts) {
@@ -2247,7 +2325,7 @@ var $exeDevices = {
 
                     const num = Math.max(1, Math.round((percentage * totalQuestions) / 100));
 
-                    if (num >= totalQuestions) return questions;
+                    if (num >= totalQuestions && !random) return questions;
 
                     const indices = Array.from({ length: totalQuestions }, (_, i) => i);
                     if (random) {
@@ -2473,3 +2551,52 @@ if (typeof global !== 'undefined') {
     global.$exe = $exe;
     global.$exeDevices = $exeDevices;
 }
+
+/* Code highlighter */
+var $exeHighlighter = {
+    init: function () {
+        var blocks = $(".highlighted-code");
+        if (blocks.length == 0) return;
+        var OK = true;
+        var t = $exe.isIE();
+        if (t && t < 9) OK = false;
+        if (OK) {
+            blocks.each(
+                function () {
+                    var e = $(this);
+                    var pre = $("PRE", e);
+                    var c = e.attr("class");
+                    if (c.indexOf("line-numbers") != -1) pre.addClass("line-numbers");
+                    if (c.indexOf("hightlight-") != -1) {
+                        var hightlight = c.split("hightlight-");
+                        if (hightlight.length > 1) {
+                            hightlight = hightlight[1];
+                            hightlight = hightlight.replace(/\and/g, ',');
+                            pre.attr('data-line', hightlight);
+                        }
+                    }
+                }
+            );
+            Prism.highlightAll();
+        } else {
+            blocks.attr("class", "pre-code");
+        }
+    },
+    // To review
+    // Line 27 (line numbers plugin):
+    checkClass: function (s, e) {
+        // We replace s.test(e.element.className) with $exeHighlighter.checkClass(s,e)
+        if (document.body.className.indexOf("exe-epub3") == 0) {
+            var wrapper = $(e.element.parentNode).parents(".highlighted-code");
+            var wrapperClass = "";
+            var hasLines = false;
+            if (wrapper.length == 1) wrapperClass = wrapper.attr("class")
+            if (wrapperClass.indexOf("highlighted-code") != -1) hasLines = true;
+            return hasLines;
+        }
+        return s.test(e.element.className);
+    }
+}
+$(function () {
+    if (window.eXeLearning === undefined) $exeHighlighter.init();
+});
